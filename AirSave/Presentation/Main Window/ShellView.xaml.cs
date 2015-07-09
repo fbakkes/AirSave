@@ -1,6 +1,4 @@
-﻿using GMap.NET;
-using GMap.NET.MapProviders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,19 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AirSave
+namespace AirSave.Presentation.Main_Window
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ShellView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ShellView : UserControl
     {
-        public MainWindow()
+        public ShellView()
         {
             InitializeComponent();
-
-            MainMap.MapProvider = GMapProviders.OpenStreetMap;
-            MainMap.Position = new PointLatLng(54.6961334816182, 25.2985095977783);
         }
     }
 }
