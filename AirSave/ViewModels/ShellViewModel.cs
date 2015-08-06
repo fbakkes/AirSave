@@ -3,9 +3,12 @@ using System.Windows;
 
 namespace AirSave.ViewModels
 {
-    public class ShellViewModel : PropertyChangedBase , IShell
+    public class ShellViewModel : PropertyChangedBase, IShell
     {
         string name;
+
+        public ShellViewModel()
+        { }
 
         public string Name
         {

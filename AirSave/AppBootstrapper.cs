@@ -21,6 +21,7 @@ namespace AirSave
             container.Singleton<IWindowManager, WindowManager>();
             container.Singleton<IEventAggregator, EventAggregator>();
             container.PerRequest<IShell, ShellViewModel>();
+            container.RegisterSingleton(typeof(GMapViewModel), "GMap", typeof(GMapViewModel));
         }
 
         protected override object GetInstance(Type service, string key)
