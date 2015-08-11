@@ -6,10 +6,8 @@
              xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Platform"
              xmlns:local="clr-namespace:AirSave.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="500">
     <Grid>
-        <local:GMapView cal:Bind.Model="GMap"/>
-        <TextBox x:Name="Name" HorizontalAlignment="Left" Height="23" Margin="79,61,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="SayHello" Content="Button" HorizontalAlignment="Left" Margin="120,167,0,0" VerticalAlignment="Top" Width="75"/>
+        <local:GMapView/>
     </Grid>
 </UserControl>

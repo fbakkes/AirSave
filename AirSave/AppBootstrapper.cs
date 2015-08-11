@@ -2,6 +2,7 @@
 using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace AirSave
 {
@@ -43,9 +44,17 @@ namespace AirSave
             container.BuildUp(instance);
         }
 
-        protected override void OnStartup(object sender, System.Windows.StartupEventArgs e)
+        protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            DisplayRootViewFor<IShell>();
+            var shellSettings = new Dictionary<string, object>
+                {
+                    { "Title", "AirSave"},
+                    { "WindowStyle", WindowStyle.ToolWindow },
+                    { "ResizeMode", ResizeMode.CanResize},
+                    { "WindowState", WindowState.Normal},
+                    { "WindowStartupLocation", WindowStartupLocation.CenterScreen }
+                };
+            DisplayRootViewFor<IShell>(shellSettings);
         }
     }
 }

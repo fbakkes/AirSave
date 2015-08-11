@@ -3,7 +3,6 @@ using Caliburn.Micro;
 using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsPresentation;
-using System.ComponentModel.Composition;
 
 namespace AirSave.ViewModels
 {
@@ -20,9 +19,8 @@ namespace AirSave.ViewModels
             var gmapView = view as GMapView;
             Map = gmapView.MapControl;
 
-
-            Map.MapProvider = GMapProviders.GoogleSatelliteMap;
-            Map.Position = new PointLatLng(54.6961334816182, 25.2985095977783);
+            Map.MapProvider = GMapProviders.OpenStreetMap;
+            Map.Position = new PointLatLng(-33, 17);
             Map.Zoom = 13;
             Map.MaxZoom = 24;
             Map.MinZoom = 1;
