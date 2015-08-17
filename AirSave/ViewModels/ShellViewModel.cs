@@ -1,5 +1,4 @@
 ﻿using Caliburn.Micro;
-using System.Windows;
 
 namespace AirSave.ViewModels
 {
@@ -7,5 +6,6 @@ namespace AirSave.ViewModels
     {
         public ShellViewModel()
         { }
+        
     }
 }

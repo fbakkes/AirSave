@@ -1,14 +1,23 @@
-﻿using AirSave.ViewModels;
+﻿using AirSave.Models;
+using AirSave.ViewModels;
 using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Threading;
 using System.Windows;
 
 namespace AirSave
 {
     public class AppBootstrapper : BootstrapperBase
     {
-        SimpleContainer container;
+        private SimpleContainer _container;
+        public static SimpleContainer Container = null;
+
+        /// <summary>
+        /// Sync. object for getting/setting from the container. Any number of reads are allowed but writes are synced
+        /// </summary>
+        private static readonly ReaderWriterLockSlim InstanceLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         public AppBootstrapper()
         {
@@ -17,31 +26,76 @@ namespace AirSave
 
         protected override void Configure()
         {
-            container = new SimpleContainer();
+            _container = new SimpleContainer();
 
-            container.Singleton<IWindowManager, WindowManager>();
-            container.Singleton<IEventAggregator, EventAggregator>();
-            container.PerRequest<IShell, ShellViewModel>();
-            container.RegisterSingleton(typeof(GMapViewModel), "GMap", typeof(GMapViewModel));
+            _container.Singleton<IWindowManager, WindowManager>();
+            _container.Singleton<IEventAggregator, EventAggregator>();
+            _container.PerRequest<IShell, ShellViewModel>();
+            _container.RegisterSingleton(typeof(GMapViewModel), "GMap", typeof(GMapViewModel));
+
+            _container.RegisterSingleton(typeof(Settings), "Settings", typeof(Settings));
+
+            Container = _container;
+        }
+        /// <summary>
+        /// Retrieves an instance of type T from the IoC container
+        /// </summary>
+        /// <typeparam name="T">Type of object to retrieve</typeparam>
+        /// <param name="key">Key to use. Supply null to use the type name</param>
+        /// <returns>Object instance or null</returns>
+        public static T GetInstance<T>(string key = null)
+        {
+            object instance;
+            if (Container == null) return default(T);
+            //if (key == null) key = typeof (T).Name;
+
+            InstanceLock.EnterReadLock();
+            try
+            {
+                instance = Container.GetInstance(typeof(T), key);
+            }
+            finally
+            {
+                InstanceLock.ExitReadLock();
+            }
+            return (T)instance;
+        }
+
+        /// <summary>
+        /// Updates an instance in the container
+        /// </summary>
+        public static void SetInstance<T>(T instance, string key = null)
+        {
+            InstanceLock.EnterWriteLock();
+            try
+            {
+                Container.UnregisterHandler(typeof(T), key);
+                Container.RegisterInstance(typeof(T), key, instance);
+            }
+            finally
+            {
+                InstanceLock.ExitWriteLock();
+            }
         }
 
         protected override object GetInstance(Type service, string key)
         {
-            var instance = container.GetInstance(service, key);
-            if (instance != null)
-                return instance;
-
-            throw new InvalidOperationException("Could not locate any instances.");
+            return _container.GetInstance(service, key);
         }
 
-        protected override IEnumerable<object> GetAllInstances(Type service)
+        protected override IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            return container.GetAllInstances(service);
+            return _container.GetAllInstances(serviceType);
         }
 
         protected override void BuildUp(object instance)
         {
-            container.BuildUp(instance);
+            _container.BuildUp(instance);
+        }
+
+        protected override IEnumerable<Assembly> SelectAssemblies()
+        {
+            return new[] { Assembly.GetExecutingAssembly() };
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
@@ -51,10 +105,16 @@ namespace AirSave
                     { "Title", "AirSave"},
                     { "WindowStyle", WindowStyle.ToolWindow },
                     { "ResizeMode", ResizeMode.CanResize},
-                    { "WindowState", WindowState.Normal},
+                    { "WindowState", WindowState.Maximized},
                     { "WindowStartupLocation", WindowStartupLocation.CenterScreen }
                 };
             DisplayRootViewFor<IShell>(shellSettings);
+        }
+
+        protected override void OnExit(object sender, EventArgs e)
+        {
+            AppBootstrapper.GetInstance<Settings>().SaveSettings();
+            base.OnExit(sender, e);
         }
     }
 }

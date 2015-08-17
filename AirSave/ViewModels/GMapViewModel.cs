@@ -1,8 +1,8 @@
-﻿using AirSave.Views;
+﻿using AirSave.GMap;
+using AirSave.Views;
 using Caliburn.Micro;
 using GMap.NET;
 using GMap.NET.MapProviders;
-using GMap.NET.WindowsPresentation;
 
 namespace AirSave.ViewModels
 {
@@ -27,8 +27,8 @@ namespace AirSave.ViewModels
         }
 
 
-        private GMapControl _map;
-        public GMapControl Map
+        private GMapControlModel _map;
+        public GMapControlModel Map
         {
             get { return _map; }
             set

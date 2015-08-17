@@ -74,6 +74,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GMap\GMapControlModel.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\ZoneModel.cs" />
     <Compile Include="ViewModels\GMapViewModel.cs" />
